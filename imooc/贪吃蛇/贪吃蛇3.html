@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>贪吃蛇</title>
+<style>
+*{ margin:0; padding:0;}
+#c_box{ width:600px; height:400px; border:2px solid #ccc; margin:100px auto; position:relative;}
+#c_box div{ width:10px; height:10px; background:#ccc; position:absolute;}
+#c_box .shske_t{ background:#f00;}
+#c_box .shske_b{}
+</style>
+</head>
+<body>
+<div id="c_box">
+	<div class="shske_t" id="shske_t"></div>
+	<div class="shske_t"></div>
+	<div class="shske_t"></div>
+	<div class="shske_t"></div>
+</div>
+<script src="cs.js"></script>
+<script>
+window.onload = function (){
+	var oBox = document.getElementById("c_box");
+	var o_top = document.getElementById("shske_t");
+	var aDiv = oBox.children;
+	var className = "shske_b";
+	var arr_posDiv = [];
+
+	var i_box_w = oBox.clientWidth;					//	父级的宽度 除掉了边框
+	var i_box_h = oBox.clientHeight;				//	父级的高度
+
+	var iNum_bor = 10;
+	var in_side = 'bottom';
+	var timer = null;
+	var oBtn = true;
+
+	var i_box_t = oBox.offsetTop + iNum_bor;		//	父级的位置 top
+	var i_box_l = oBox.offsetLeft + iNum_bor;		//	父级的位置 left
+
+	var pos_head = pos_l(oBox);
+
+	o_top.style.left = pos_head.x + 'px';
+	o_top.style.top = pos_head.y + 'px';
+	arr_posDiv.push([pos_head.x, pos_head.y])
+
+	for(var i=1; i<aDiv.length;i++){
+		aDiv[i].style.left = pos_head.x-i*iNum_bor + 'px';
+		aDiv[i].style.top = pos_head.y + 'px';
+		arr_posDiv.push([pos_head.x-i*iNum_bor, pos_head.y]);
+	};
+
+	document.onkeydown = function (ev){
+		var oEvent = ev || window.event;
+		
+		switch(oEvent.keyCode){
+			case 37:
+				in_side = 'left';
+				break;
+			case 38:
+				in_side = 'top';
+				break;
+			case 39:
+				in_side = 'right';
+				break;
+			case 40:
+				in_side = 'bottom';
+				break;
+		};
+	};
+
+
+	timer = setInterval(set_move, 300);
+
+	function set_move(){
+		/*switch(in_side){
+			case 'left':
+				break;
+			case 'top':
+				break;
+			case 'right':
+				break;
+			case 40:
+				break;
+		};*/
+
+		o_top.style.left = o_top.offsetLeft + 10 + 'px';
+		for(var i=1; i<aDiv.length; i++){
+			aDiv[i].style.left = arr_posDiv[i-1][0] + 'px';
+			aDiv[i].style.top = arr_posDiv[i-1][1] + 'px';
+		};
+		arr_posDiv = [];
+		for(var i=0; i<aDiv.length; i++){
+			arr_posDiv.push([aDiv[i].offsetLeft, aDiv[i].offsetTop])
+		};
+
+		console.log(arr_posDiv);
+	}
+
+	document.onclick = function (){
+
+		if(oBtn){
+			clearInterval(timer);
+		}else{
+			timer = setInterval(set_move, 300);
+		}
+		
+		oBtn = !oBtn;
+	};
+
+	//console.log(arr_posDiv);
+	
+};
+</script>
+</body>
+</html>

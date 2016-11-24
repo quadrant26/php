@@ -1,0 +1,3 @@
+getCompterStyle
+
+currStyle

@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>贪吃蛇</title>
+<style>
+*{ margin:0; padding:0;}
+#c_box{ width:600px; height:400px; border:2px solid #ccc; margin:100px auto; position:relative;}
+#c_box div{ width:10px; height:10px; background:#ccc; position:absolute;}
+#c_box .shske_t{ background:#f00;}
+#c_box .shske_b{}
+</style>
+</head>
+<body>
+<div id="c_box">
+	<div class="shske_t" id="shske_t"></div>
+</div>
+<script src="cs.js"></script>
+<script>
+window.onload = function (){
+	var oBox = document.getElementById("c_box");
+	var o_top = document.getElementById("shske_t");
+	var aDiv = oBox.children;
+	var className = "shske_b";
+
+	var iNum_bor = 2;
+	var iNum_o = 10;
+	var iSpeed_x = 10;
+	var iSpeed_y = 10;
+	var timer = null;
+	var oNukk = true;
+	var oBong = true;
+	var s_b_side = "bBottom"
+
+	var i_box_w = oBox.clientWidth;					//	父级的宽度 除掉了边框
+	var i_box_h = oBox.clientHeight;				//	父级的高度
+
+	var i_box_t = oBox.offsetTop + iNum_bor;		//	父级的位置 top
+	var i_box_l = oBox.offsetLeft + iNum_bor;		//	父级的位置 left
+
+	var pos_head = pos_l(oBox);
+
+	o_top.style.left = pos_head.x + 'px';
+	o_top.style.top = pos_head.y + 'px';
+
+	if(oNukk){
+		crea_box();
+	};
+
+	function crea_box(){
+		var oDiv = document.createElement("div");
+		var _pos = pos_l(oBox);
+		oDiv.style.left = _pos.x + 'px';
+		oDiv.style.top = _pos.y + 'px';
+		color_fn(oDiv);
+		oBox.appendChild(oDiv);
+	}
+
+
+	// 控制方向
+	document.onkeydown = function (ev){
+		var oEvent = ev || window.event;
+		switch(oEvent.keyCode){
+			case 37:
+				s_b_side = "bLeft";
+				break;
+			case 38:
+				s_b_side = "bTop";
+				break;
+			case 39:
+				s_b_side = "bRight";
+				break;
+			case 40:
+				s_b_side = "bBottom";
+				break;
+		};
+	};
+
+
+	clearInterval(timer);
+	timer = setInterval(function (){
+		var len = aDiv.length;
+		var oLastDiv = aDiv[len-1];
+
+		// 获取游离在外的棋子的位置
+		var i_last_left = oLastDiv.offsetLeft;
+		var i_last_top = oLastDiv.offsetTop;
+
+		// 获取贪吃蛇头部的位置
+		var i_first_left = o_top.offsetLeft;
+		var i_first_Top = o_top.offsetTop;
+		
+
+		switch(s_b_side){
+			case 'bBottom':
+				o_top.style.top = o_top.offsetTop + iSpeed_x + 'px';
+				if( (i_first_left == i_last_left) && (i_first_Top+iNum_o>=i_last_top) ){
+					//alert("向下运动碰上了");
+					oNukk = false;
+				};
+				break;
+			case 'bRight':
+				o_top.style.left = o_top.offsetLeft + iSpeed_x + 'px';
+				if( (i_first_left+iNum_o >= i_last_left) && (i_first_Top == i_last_top) ){
+					//alert("向右运动碰上了");
+					oNukk = false;
+				};
+				break;
+			case 'bLeft':
+				o_top.style.left = o_top.offsetLeft - iSpeed_x + 'px';
+				if( (i_first_left <= i_last_left+iNum_o) && (i_first_Top == i_last_top) ){
+					//alert("向左运动碰上了");
+					oNukk = false;
+				};
+				break;
+			case 'bTop':
+				o_top.style.top = o_top.offsetTop - iSpeed_x + 'px';
+				if( (i_first_left == i_last_left) && (i_first_Top <= i_last_top+iNum_o) ){
+					//alert("向上运动碰上了");
+					oNukk = false;
+				};
+				break;
+		};
+		
+		// shake(oBox, s_b_side);
+
+		if(oNukk == false){
+			
+
+		}else{
+			crea_box();
+		}
+
+		// 遇到边界 挂了
+		if(o_top.offsetTop <= 0 ){
+			alert("你挂了");
+			clearInterval(timer);
+		}else if( o_top.offsetTop >= (i_box_h - iNum_o) ){
+
+			alert("你挂了");
+			clearInterval(timer);
+		};
+
+		if(o_top.offsetLeft <= 0 ){
+			alert("你挂了");
+			clearInterval(timer);
+		}else if( o_top.offsetLeft >= (i_box_w - iNum_o) ){
+
+			alert("你挂了");
+			clearInterval(timer);
+		};
+
+	}, 180);
+	
+	
+};
+</script>
+</body>
+</html>
